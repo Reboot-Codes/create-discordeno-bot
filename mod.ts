@@ -1,7 +1,26 @@
-import { Command, blue, red, Select, Input, Checkbox } from "./deps.ts";
+import { Command, blue, red, Select, Input, Secret, Checkbox, Confirm } from "./deps.ts";
 import addBase from './src/add-base.ts';
 import addFramework from './src/add-framework.ts';
 import addPlugin from './src/add-plugin.ts';
+import initGit from './src/init-git.ts';
+
+function humanizeMilliseconds(milliseconds: number) {
+  // Gets ms into seconds
+  const time = milliseconds / 1000;
+  if (time < 1) return "1s";
+
+  const days = Math.floor(time / 86400);
+  const hours = Math.floor((time % 86400) / 3600);
+  const minutes = Math.floor(((time % 86400) % 3600) / 60);
+  const seconds = Math.floor(((time % 86400) % 3600) % 60);
+
+  const dayString = days ? `${days}d ` : "";
+  const hourString = hours ? `${hours}h ` : "";
+  const minuteString = minutes ? `${minutes}m ` : "";
+  const secondString = seconds ? `${seconds}s ` : "";
+
+  return `${dayString}${hourString}${minuteString}${secondString}`.trim();
+}
 
 await new Command()
   .name("create-discordeno-bot")
@@ -46,29 +65,6 @@ await new Command()
       });
     }
 
-    console.log(`\n${blue('>')} Okay, we're going to create a ${blue(botType)} bot.\n${blue('>')} ${framework == "none" ? `Without a framework.` : `With the ${blue(framework)} framework.`}\n`);
-
-    const denoVersion = Deno.version.deno;
-    if (!(Number(denoVersion.split('.')[0]) >= 1)) {
-      console.log(`${red('!')} Aw shnap! The version of deno you have installed (v${denoVersion}) is too old!\n${red('!')} Please upgrade to a version at or greater than v1`);
-      Deno.exit(1);
-    }
-    console.log(`${blue('>')} You have ${blue(`deno v${denoVersion}`)} installed, great!\n`);
-
-    const botName = await Input.prompt({
-      indent: "",
-      listPointer: blue(">"),
-      pointer: blue(">"),
-      message: "What would you like to call your bot?"
-    });
-
-    const botToken = await Input.prompt({
-      indent: "",
-      listPointer: blue(">"),
-      pointer: blue(">"),
-      message: "What is your bot's API token?"
-    });
-
     let plugins: string[] = [];
     if (framework == "none") {
       plugins = await Checkbox.prompt({
@@ -86,23 +82,57 @@ await new Command()
       });
     }
 
+    console.log(`\n${blue('>')} Okay, we're going to create a ${blue(botType)} bot.\n${blue('>')} ${framework == "none" ? `Without a framework.` : `With the ${blue(framework)} framework.`}\n`);
+
+    const denoVersion = Deno.version.deno;
+    if (!(Number(denoVersion.split('.')[0]) >= 1)) {
+      console.log(`${red('!')} Aw shnap! The version of deno you have installed (v${denoVersion}) is too old!\n${red('!')} Please upgrade to a version at or greater than v1`);
+      Deno.exit(1);
+    }
+    console.log(`${blue('>')} You have ${blue(`deno v${denoVersion}`)} installed, great!\n`);
+
+    const botName = await Input.prompt({
+      indent: "",
+      listPointer: blue(">"),
+      pointer: blue(">"),
+      message: "What would you like to call your bot?"
+    });
+
+    const botToken = await Secret.prompt({
+      indent: "",
+      pointer: blue(">"),
+      message: "What is your bot's API token?"
+    });
+
     const projectDir = await Input.prompt({
       indent: "",
       listPointer: blue(">"),
       pointer: blue(">"),
       message: "Where would you like to initialize the bot?",
       default: `./${botName.toLowerCase().split(" ").join("-")}`
-    })
+    });
 
-    console.log(`\n${blue('>')} Amazing! Creating a bot in ${blue(projectDir)}...`);
+    const initializeGit = await Confirm.prompt({
+      indent: "",
+      pointer: blue(">"),
+      message: "Would you like to initialize a git repository?",
+      default: true
+    });
+
+    console.log(`\n${blue('>')} Amazing! Creating a bot in ${blue(projectDir)}...\n`);
 
     const realDir = "Deno.realPathSync(projectDir)";
-    addBase(realDir, botType, (botToken == "" ? undefined : botToken));
-    if (framework != "none") { addFramework(realDir, framework) }
+    const startTime = performance.now();
+    await addBase(realDir, botType, (botToken == "" ? undefined : botToken));
+    if (framework != "none") { await addFramework(realDir, framework) }
     if (plugins.length > 0) { 
-      plugins.forEach(plugin => {
-        addPlugin(realDir, plugin)
-      })
+      for (const plugin of plugins) {
+        await addPlugin(realDir, plugin);
+      }
     }
+    if (initializeGit) { await initGit(realDir) }
+    const endTime = performance.now();
+
+    console.log(`\n${blue('>')} Created ${blue(botName)} in ${blue(projectDir)}, took ${blue(humanizeMilliseconds(endTime - startTime))}.`);
   })
   .parse(Deno.args);
