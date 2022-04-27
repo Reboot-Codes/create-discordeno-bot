@@ -1,6 +1,10 @@
 # `create-discordeno-bot`
 
-A quick CLI to create a Discordeno Bot. (WIP, **will not** create a functional DD bot.)
+A quick CLI to create a Discordeno Bot.
+
+## Work In Progress
+
+This CLI will create a functioning Discordeno Bot. **However**, it will not add plugins or frameworks *yet*. I wouldn't suggest using this CLI yet because of this current limitation. But feel free to experiment; PR's are very much welcome!
 
 ## Usage
 
