@@ -1,4 +1,4 @@
-import { Command, blue, red, gray, Select, Input, Secret, Checkbox, Confirm } from "./deps.ts";
+import { Command, blue, red, gray, yellow, Select, Input, Secret, Checkbox, Confirm } from "./deps.ts";
 import addBase from './src/add-base.ts';
 import addFramework from './src/add-framework.ts';
 import addPlugin from './src/add-plugin.ts';
@@ -28,7 +28,8 @@ await new Command()
   .version("1.0.0")
   .description("A quick CLI to create a Discordeno Bot.")
   .action(async () => {
-    console.log(`${blue('>')} Hey there 👋, thanks for using discordeno.\n`);
+    console.log(`${blue('>')} Hey there 👋, thanks for using discordeno.`);
+    console.log(`${yellow('!')} This CLI is WIP, please send bugs to: https://github.com/Reboot-Codes/create-discordeno-bot/issues\n`)
 
     const botType = await Select.prompt({
       indent: "",
@@ -104,7 +105,8 @@ await new Command()
       indent: "",
       listPointer: blue(">"),
       pointer: blue(">"),
-      message: `What would you like to call your bot? ${gray('(e.g. "Awesome Bot")')}`
+      message: `What would you like to call your bot? ${gray('(e.g. "Awesome Bot")')}`,
+      minLength: 3
     });
 
     const botToken = await Secret.prompt({
@@ -128,7 +130,7 @@ await new Command()
       default: true
     });
 
-    console.log(`\n${blue('>')} Amazing! Creating a bot in ${blue(projectDir)}...\n`);
+    console.log(`\n${blue('>')} Amazing! Creating a bot in ${blue(projectDir)} using ${framework == "none" ? blue(`discordeno v13.0.0-rc35`) : blue(framework)}...\n`);
 
     const startTime = performance.now();
     if (framework == "none") { 
