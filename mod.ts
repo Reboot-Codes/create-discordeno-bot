@@ -1,4 +1,4 @@
-import { Command, blue, red, Select, Input, Secret, Checkbox, Confirm } from "./deps.ts";
+import { Command, blue, red, gray, Select, Input, Secret, Checkbox, Confirm } from "./deps.ts";
 import addBase from './src/add-base.ts';
 import addFramework from './src/add-framework.ts';
 import addPlugin from './src/add-plugin.ts';
@@ -83,11 +83,19 @@ await new Command()
       });
     }
 
-    console.log(`\n${blue('>')} Okay, we're going to create a ${blue(botType)} bot.\n${blue('>')} ${framework == "none" ? `Without a framework.` : `With the ${blue(framework)} framework.`}\n`);
+    console.log(`\n${blue('>')} Okay, we're going to create a ${blue(botType)} bot.\n${blue('>')} ${
+      framework == "none" ? 
+        (
+          (
+            plugins.length > 0 ? 
+            (`With the ${plugins.length > 1 ? `following plugins: ${blue(plugins.join(', '))}` : `${blue(plugins[0])} plugin.`}`) : 
+            `Without any discordeno plugins.`
+          )
+        ) : `With the ${blue(framework)} framework.`}\n`);
 
     const denoVersion = Deno.version.deno;
     if (!(Number(denoVersion.split('.')[0]) >= 1)) {
-      console.log(`${red('!')} Aw shnap! The version of deno you have installed (v${denoVersion}) is too old!\n${red('!')} Please upgrade to a version at or greater than v1`);
+      console.log(`${red('!')} The version of deno you have installed (v${denoVersion}) is too old!\n${red('!')} Please upgrade to a version at or greater than v1`);
       Deno.exit(1);
     }
     console.log(`${blue('>')} You have ${blue(`deno v${denoVersion}`)} installed, great!\n`);
@@ -96,7 +104,7 @@ await new Command()
       indent: "",
       listPointer: blue(">"),
       pointer: blue(">"),
-      message: "What would you like to call your bot?"
+      message: `What would you like to call your bot? ${gray('(e.g. "Awesome Bot")')}`
     });
 
     const botToken = await Secret.prompt({
@@ -123,13 +131,19 @@ await new Command()
     console.log(`\n${blue('>')} Amazing! Creating a bot in ${blue(projectDir)}...\n`);
 
     const startTime = performance.now();
-    await addBase(projectDir, botType, (botToken == "" ? undefined : botToken));
-    if (framework != "none") { await addFramework(projectDir, framework) }
-    if (plugins.length > 0) { 
-      for (const plugin of plugins) {
-        await addPlugin(projectDir, plugin);
+    if (framework == "none") { 
+      // Framework-less Setup Steps
+      await addBase(projectDir, botType, (botToken == "" ? undefined : botToken));
+      if (plugins.length > 0) { 
+        for (const plugin of plugins) {
+          await addPlugin(projectDir, plugin);
+        }
       }
+    } else {
+      // Framework Setup, they require different setup steps.
+      await addFramework(projectDir, framework)
     }
+    // Although git init is the same for either Functional or OOP
     if (initializeGit) { await initGit(projectDir) }
     const endTime = performance.now();
 

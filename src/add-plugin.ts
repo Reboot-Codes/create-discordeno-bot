@@ -8,5 +8,5 @@ export default async function addPlugin(directory: string, name: string) {
 
   await sleep(3); // In place of fs stuff
 
-  spinner.succeed();
+  spinner.succeed(`Added the ${name} plugin!`);
 }
