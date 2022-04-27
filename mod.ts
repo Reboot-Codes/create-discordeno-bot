@@ -4,6 +4,7 @@ import addFramework from './src/add-framework.ts';
 import addPlugin from './src/add-plugin.ts';
 import initGit from './src/init-git.ts';
 
+// Stolen from https://github.com/discordeno/discordeno/blob/main/template/minimal/src/utils/helpers.ts
 function humanizeMilliseconds(milliseconds: number) {
   // Gets ms into seconds
   const time = milliseconds / 1000;
