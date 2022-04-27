@@ -121,13 +121,12 @@ await new Command()
 
     console.log(`\n${blue('>')} Amazing! Creating a bot in ${blue(projectDir)}...\n`);
 
-    const realDir = "Deno.realPathSync(projectDir)";
     const startTime = performance.now();
-    await addBase(realDir, botType, (botToken == "" ? undefined : botToken));
-    if (framework != "none") { await addFramework(realDir, framework) }
+    await addBase(projectDir, botType, (botToken == "" ? undefined : botToken));
+    if (framework != "none") { await addFramework(projectDir, framework) }
     if (plugins.length > 0) { 
       for (const plugin of plugins) {
-        await addPlugin(realDir, plugin);
+        await addPlugin(projectDir, plugin);
       }
     }
     if (initializeGit) { await initGit(realDir) }
