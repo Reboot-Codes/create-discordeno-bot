@@ -129,7 +129,7 @@ await new Command()
         await addPlugin(projectDir, plugin);
       }
     }
-    if (initializeGit) { await initGit(realDir) }
+    if (initializeGit) { await initGit(projectDir) }
     const endTime = performance.now();
 
     console.log(`\n${blue('>')} Created ${blue(botName)} in ${blue(projectDir)}, took ${blue(humanizeMilliseconds(endTime - startTime))}.`);
