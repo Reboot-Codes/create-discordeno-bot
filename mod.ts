@@ -85,7 +85,8 @@ await new Command()
         message: "Which Object-Oriented framework would you like to use?",
         options: [
           { name: "Natico", value: "natico" },
-          { name: "Amethyst", value: "amethyst" }
+          { name: "Amethyst", value: "amethyst" },
+          { name: "Oasis", value: "oasis" }
         ]
       });
     }
