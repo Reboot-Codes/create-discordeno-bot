@@ -1,4 +1,4 @@
-import { red, TerminalSpinner, exists } from '../deps.ts';
+import { exists, red, TerminalSpinner } from "../deps.ts";
 
 /** Add import and files for the provided plugin in the provided directory. */
 export default async function addPlugin(directory: string, name: string) {
@@ -9,7 +9,13 @@ export default async function addPlugin(directory: string, name: string) {
   const directoryExists = await exists(directory);
   if (!directoryExists) {
     spinner.fail(`Failed to add the ${name} plugin!`);
-    console.log(`${red('!')} Weird, as this step is run after creating the project directory.\n${red('!')} Make a bug report at https://github.com/Reboot-Codes/create-discordeno-bot/issues`);
+    console.log(
+      `${
+        red("!")
+      } Weird, as this step is run after creating the project directory.\n${
+        red("!")
+      } Make a bug report at https://github.com/Reboot-Codes/create-discordeno-bot/issues`,
+    );
     Deno.exit(1);
   }
 
