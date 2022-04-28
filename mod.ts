@@ -9,7 +9,6 @@ import {
   Secret, 
   Checkbox, 
   Confirm, 
-  Cell, 
   Table 
 } from "./deps.ts";
 import addBase from './src/add-base.ts';
