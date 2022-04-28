@@ -1,4 +1,17 @@
-import { Command, blue, red, gray, yellow, Select, Input, Secret, Checkbox, Confirm } from "./deps.ts";
+import { 
+  Command, 
+  blue, 
+  red, 
+  gray, 
+  yellow, 
+  Select, 
+  Input, 
+  Secret, 
+  Checkbox, 
+  Confirm, 
+  Cell, 
+  Table 
+} from "./deps.ts";
 import addBase from './src/add-base.ts';
 import addFramework from './src/add-framework.ts';
 import addPlugin from './src/add-plugin.ts';
@@ -29,7 +42,18 @@ await new Command()
   .description("A quick CLI to create a Discordeno Bot.")
   .action(async () => {
     console.log(`${blue('>')} Hey there 👋, thanks for using discordeno.`);
-    console.log(`${yellow('!')} This CLI is WIP, please send bugs to: https://github.com/Reboot-Codes/create-discordeno-bot/issues\n`)
+    console.log(`${yellow('!')} This CLI is WIP, please send bugs to: https://github.com/Reboot-Codes/create-discordeno-bot/issues\n${yellow('!')} Working configuration:`);
+    const worksTable = new Table(
+      ["botType", "gateway"],
+      ["approach", "functional"],
+      ["framework", "none"],
+      ["plugins", "[]"],
+      ["botName", "any"],
+      ["botToken", "any"],
+      ["projectDir", "any"],
+      ["initializeGit", "any"]
+    );
+    worksTable.border(true).render();
 
     const botType = await Select.prompt({
       indent: "",
